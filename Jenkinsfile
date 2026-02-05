@@ -1,21 +1,9 @@
-pipeline {
-  agent {label 'linux'}
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
-  stages {
-    stage('Build') {
-      steps {
-        sh './gradlew clean check --no-daemon'
-      }
+@Library('shared-library') _
+
+myCustomAgent {
+    stage('Build Project') {
+        container('maven') {
+            sh 'mvn --version'
+        }
     }
-  }
-  post {
-    always {
-        junit(
-          allowEmptyResults: true, 
-          testResults: '**/build/test-results/test/*.xml'
-        )
-    }
-  }
 }
